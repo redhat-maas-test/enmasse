@@ -138,7 +138,7 @@ parameters:
   value: enmasseproject/topic-forwarder
 - description: The image to use for the router
   name: ROUTER_REPO
-  value: enmasseproject/qdrouterd
+  value: lulf/qdrouterd
 - description: The link capacity setting for router
   name: ROUTER_LINK_CAPACITY
   value: '50'

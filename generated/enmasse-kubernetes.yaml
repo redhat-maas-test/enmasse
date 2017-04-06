@@ -12,7 +12,8 @@ items:
       "spec": {"containers": [{"env": [{"name": "LINK_CAPACITY", "value": "${ROUTER_LINK_CAPACITY}"}],
       "image": "${ROUTER_REPO}:latest", "livenessProbe": {"tcpSocket": {"port": "amqp"}},
       "name": "router", "ports": [{"containerPort": 5672, "name": "amqp", "protocol":
-      "TCP"}, {"containerPort": 55673, "name": "internal", "protocol": "TCP"}]}]}}}},
+      "TCP"}, {"containerPort": 55673, "name": "internal", "protocol": "TCP"}]}],
+      "volumes": [{"configMap": {"name": "hawkular-router-config"}, "name": "hawkular-openshift-agent"}]}}}},
       {"apiVersion": "v1", "kind": "Service", "metadata": {"annotations": {"service.alpha.openshift.io/dependencies":
       "[{\"kind\": \"Service\", \"name\": \"admin\", \"namespace\": \"\"}, {\"kind\":
       \"Service\", \"name\": \"subscription\", \"namespace\": \"\"}, {\"kind\": \"Service\",
@@ -62,7 +63,13 @@ items:
       \"messagingMetricType\": \"numConsumers\", \"messagingQueue\": \"${queue}\"},
       \"type\": \"gauge\"}], \"path\": \"/jolokia/\", \"port\": 8161, \"protocol\":
       \"http\", \"type\": \"jolokia\"}]}"}, "kind": "ConfigMap", "metadata": {"name":
-      "hawkular-broker-config"}}, {"apiVersion": "extensions/v1beta1", "kind": "Ingress",
+      "hawkular-broker-config"}}, {"apiVersion": "v1", "data": {"hawkular-openshift-agent":
+      "{\"endpoints\": [{\"collection_interval\": \"60s\", \"metrics\": [{\"description\":
+      \"Current number of connections\", \"id\": \"numConnections\", \"name\": \"num_connections\",
+      \"tags\": {\"messagingComponent\": \"router\", \"messagingMetricType\": \"numConnections\"},
+      \"type\": \"gauge\"}], \"path\": \"/metrics/\", \"port\": 8080, \"protocol\":
+      \"http\", \"type\": \"prometheus\"}]}"}, "kind": "ConfigMap", "metadata": {"name":
+      "hawkular-router-config"}}, {"apiVersion": "extensions/v1beta1", "kind": "Ingress",
       "metadata": {"labels": {"app": "enmasse", "instance": "${INSTANCE}"}, "name":
       "console"}, "spec": {"rules": [{"host": "${CONSOLE_HOSTNAME}", "http": {"paths":
       [{"backend": {"serviceName": "admin", "servicePort": 8080}, "path": "/"}]}}]}},
@@ -94,11 +101,11 @@ items:
       "port": 5672}, {"name": "queue-scheduler", "port": 55667}, {"name": "console-ws",
       "port": 56720}, {"name": "console-http", "port": 8080}], "selector": {"instance":
       "${INSTANCE}", "name": "admin"}}}], "parameters": [{"description": "The image
-      to use for the router", "name": "ROUTER_REPO", "value": "enmasseproject/qdrouterd"},
-      {"description": "The link capacity setting for router", "name": "ROUTER_LINK_CAPACITY",
-      "value": "50"}, {"description": "The image to use for the configuration service",
-      "name": "CONFIGSERV_REPO", "value": "enmasseproject/configserv"}, {"description":
-      "The docker image to use for the queue scheduler", "name": "QUEUE_SCHEDULER_REPO",
+      to use for the router", "name": "ROUTER_REPO", "value": "lulf/qdrouterd"}, {"description":
+      "The link capacity setting for router", "name": "ROUTER_LINK_CAPACITY", "value":
+      "50"}, {"description": "The image to use for the configuration service", "name":
+      "CONFIGSERV_REPO", "value": "enmasseproject/configserv"}, {"description": "The
+      docker image to use for the queue scheduler", "name": "QUEUE_SCHEDULER_REPO",
       "value": "enmasseproject/queue-scheduler"}, {"description": "The image to use
       for the router agent", "name": "RAGENT_REPO", "value": "enmasseproject/ragent"},
       {"description": "The image to use for the subscription services", "name": "SUBSERV_REPO",
@@ -133,12 +140,12 @@ items:
       to use for the message broker", "name": "BROKER_REPO", "value": "enmasseproject/artemis"},
       {"description": "The default image to use as topic forwarder", "name": "TOPIC_FORWARDER_REPO",
       "value": "enmasseproject/topic-forwarder"}, {"description": "The image to use
-      for the router", "name": "ROUTER_REPO", "value": "enmasseproject/qdrouterd"},
-      {"description": "The link capacity setting for router", "name": "ROUTER_LINK_CAPACITY",
-      "value": "50"}, {"description": "A valid instance name for the instance", "name":
-      "INSTANCE", "required": true}, {"description": "A valid name for the instance",
-      "name": "NAME", "required": true}, {"description": "The address to use for the
-      queue", "name": "ADDRESS", "required": true}]}'
+      for the router", "name": "ROUTER_REPO", "value": "lulf/qdrouterd"}, {"description":
+      "The link capacity setting for router", "name": "ROUTER_LINK_CAPACITY", "value":
+      "50"}, {"description": "A valid instance name for the instance", "name": "INSTANCE",
+      "required": true}, {"description": "A valid name for the instance", "name":
+      "NAME", "required": true}, {"description": "The address to use for the queue",
+      "name": "ADDRESS", "required": true}]}'
     queue-persisted.json: '{"apiVersion": "v1", "kind": "Template", "metadata": {"labels":
       {"app": "enmasse"}, "name": "queue-persisted"}, "objects": [{"apiVersion": "v1",
       "kind": "PersistentVolumeClaim", "metadata": {"labels": {"app": "enmasse", "group_id":
@@ -163,12 +170,12 @@ items:
       to use for the message broker", "name": "BROKER_REPO", "value": "enmasseproject/artemis"},
       {"description": "The default image to use as topic forwarder", "name": "TOPIC_FORWARDER_REPO",
       "value": "enmasseproject/topic-forwarder"}, {"description": "The image to use
-      for the router", "name": "ROUTER_REPO", "value": "enmasseproject/qdrouterd"},
-      {"description": "The link capacity setting for router", "name": "ROUTER_LINK_CAPACITY",
-      "value": "50"}, {"description": "A valid instance name for the instance", "name":
-      "INSTANCE", "required": true}, {"description": "A valid name for the instance",
-      "name": "NAME", "required": true}, {"description": "The address to use for the
-      queue", "name": "ADDRESS", "required": true}]}'
+      for the router", "name": "ROUTER_REPO", "value": "lulf/qdrouterd"}, {"description":
+      "The link capacity setting for router", "name": "ROUTER_LINK_CAPACITY", "value":
+      "50"}, {"description": "A valid instance name for the instance", "name": "INSTANCE",
+      "required": true}, {"description": "A valid name for the instance", "name":
+      "NAME", "required": true}, {"description": "The address to use for the queue",
+      "name": "ADDRESS", "required": true}]}'
     tls-enmasse-instance-infra.json: '{"apiVersion": "v1", "kind": "Template", "metadata":
       {"labels": {"app": "enmasse"}, "name": "tls-enmasse-instance-infra"}, "objects":
       [{"apiVersion": "extensions/v1beta1", "kind": "Deployment", "metadata": {"labels":
@@ -180,7 +187,8 @@ items:
       "name": "router", "ports": [{"containerPort": 5672, "name": "amqp", "protocol":
       "TCP"}, {"containerPort": 55673, "name": "internal", "protocol": "TCP"}, {"containerPort":
       5671, "name": "amqps", "protocol": "TCP"}], "volumeMounts": [{"mountPath": "/etc/qpid-dispatch/ssl",
-      "name": "ssl-certs", "readOnly": true}]}], "volumes": [{"name": "ssl-certs",
+      "name": "ssl-certs", "readOnly": true}]}], "volumes": [{"configMap": {"name":
+      "hawkular-router-config"}, "name": "hawkular-openshift-agent"}, {"name": "ssl-certs",
       "secret": {"secretName": "qdrouterd-certs"}}]}}}}, {"apiVersion": "v1", "kind":
       "Service", "metadata": {"annotations": {"service.alpha.openshift.io/dependencies":
       "[{\"kind\": \"Service\", \"name\": \"admin\", \"namespace\": \"\"}, {\"kind\":
@@ -237,7 +245,13 @@ items:
       \"messagingMetricType\": \"numConsumers\", \"messagingQueue\": \"${queue}\"},
       \"type\": \"gauge\"}], \"path\": \"/jolokia/\", \"port\": 8161, \"protocol\":
       \"http\", \"type\": \"jolokia\"}]}"}, "kind": "ConfigMap", "metadata": {"name":
-      "hawkular-broker-config"}}, {"apiVersion": "extensions/v1beta1", "kind": "Ingress",
+      "hawkular-broker-config"}}, {"apiVersion": "v1", "data": {"hawkular-openshift-agent":
+      "{\"endpoints\": [{\"collection_interval\": \"60s\", \"metrics\": [{\"description\":
+      \"Current number of connections\", \"id\": \"numConnections\", \"name\": \"num_connections\",
+      \"tags\": {\"messagingComponent\": \"router\", \"messagingMetricType\": \"numConnections\"},
+      \"type\": \"gauge\"}], \"path\": \"/metrics/\", \"port\": 8080, \"protocol\":
+      \"http\", \"type\": \"prometheus\"}]}"}, "kind": "ConfigMap", "metadata": {"name":
+      "hawkular-router-config"}}, {"apiVersion": "extensions/v1beta1", "kind": "Ingress",
       "metadata": {"labels": {"app": "enmasse", "instance": "${INSTANCE}"}, "name":
       "console"}, "spec": {"rules": [{"host": "${CONSOLE_HOSTNAME}", "http": {"paths":
       [{"backend": {"serviceName": "admin", "servicePort": 8080}, "path": "/"}]}}]}},
@@ -269,11 +283,11 @@ items:
       "port": 5672}, {"name": "queue-scheduler", "port": 55667}, {"name": "console-ws",
       "port": 56720}, {"name": "console-http", "port": 8080}], "selector": {"instance":
       "${INSTANCE}", "name": "admin"}}}], "parameters": [{"description": "The image
-      to use for the router", "name": "ROUTER_REPO", "value": "enmasseproject/qdrouterd"},
-      {"description": "The link capacity setting for router", "name": "ROUTER_LINK_CAPACITY",
-      "value": "50"}, {"description": "The image to use for the configuration service",
-      "name": "CONFIGSERV_REPO", "value": "enmasseproject/configserv"}, {"description":
-      "The docker image to use for the queue scheduler", "name": "QUEUE_SCHEDULER_REPO",
+      to use for the router", "name": "ROUTER_REPO", "value": "lulf/qdrouterd"}, {"description":
+      "The link capacity setting for router", "name": "ROUTER_LINK_CAPACITY", "value":
+      "50"}, {"description": "The image to use for the configuration service", "name":
+      "CONFIGSERV_REPO", "value": "enmasseproject/configserv"}, {"description": "The
+      docker image to use for the queue scheduler", "name": "QUEUE_SCHEDULER_REPO",
       "value": "enmasseproject/queue-scheduler"}, {"description": "The image to use
       for the router agent", "name": "RAGENT_REPO", "value": "enmasseproject/ragent"},
       {"description": "The image to use for the subscription services", "name": "SUBSERV_REPO",
@@ -310,12 +324,11 @@ items:
       "value": "enmasseproject/artemis"}, {"description": "The default image to use
       as topic forwarder", "name": "TOPIC_FORWARDER_REPO", "value": "enmasseproject/topic-forwarder"},
       {"description": "The image to use for the router", "name": "ROUTER_REPO", "value":
-      "enmasseproject/qdrouterd"}, {"description": "The link capacity setting for
-      router", "name": "ROUTER_LINK_CAPACITY", "value": "50"}, {"description": "A
-      valid instance name for the instance", "name": "INSTANCE", "required": true},
-      {"description": "A valid name for the instance", "name": "NAME", "required":
-      true}, {"description": "The address to use for the queue", "name": "ADDRESS",
-      "required": true}]}'
+      "lulf/qdrouterd"}, {"description": "The link capacity setting for router", "name":
+      "ROUTER_LINK_CAPACITY", "value": "50"}, {"description": "A valid instance name
+      for the instance", "name": "INSTANCE", "required": true}, {"description": "A
+      valid name for the instance", "name": "NAME", "required": true}, {"description":
+      "The address to use for the queue", "name": "ADDRESS", "required": true}]}'
     tls-queue-persisted.json: '{"apiVersion": "v1", "kind": "Template", "metadata":
       {"labels": {"app": "enmasse"}, "name": "tls-queue-persisted"}, "objects": [{"apiVersion":
       "v1", "kind": "PersistentVolumeClaim", "metadata": {"labels": {"app": "enmasse",
@@ -341,12 +354,12 @@ items:
       to use for the message broker", "name": "BROKER_REPO", "value": "enmasseproject/artemis"},
       {"description": "The default image to use as topic forwarder", "name": "TOPIC_FORWARDER_REPO",
       "value": "enmasseproject/topic-forwarder"}, {"description": "The image to use
-      for the router", "name": "ROUTER_REPO", "value": "enmasseproject/qdrouterd"},
-      {"description": "The link capacity setting for router", "name": "ROUTER_LINK_CAPACITY",
-      "value": "50"}, {"description": "A valid instance name for the instance", "name":
-      "INSTANCE", "required": true}, {"description": "A valid name for the instance",
-      "name": "NAME", "required": true}, {"description": "The address to use for the
-      queue", "name": "ADDRESS", "required": true}]}'
+      for the router", "name": "ROUTER_REPO", "value": "lulf/qdrouterd"}, {"description":
+      "The link capacity setting for router", "name": "ROUTER_LINK_CAPACITY", "value":
+      "50"}, {"description": "A valid instance name for the instance", "name": "INSTANCE",
+      "required": true}, {"description": "A valid name for the instance", "name":
+      "NAME", "required": true}, {"description": "The address to use for the queue",
+      "name": "ADDRESS", "required": true}]}'
     tls-topic-inmemory.json: '{"apiVersion": "v1", "kind": "Template", "metadata":
       {"labels": {"app": "enmasse"}, "name": "tls-topic-inmemory"}, "objects": [{"apiVersion":
       "extensions/v1beta1", "kind": "Deployment", "metadata": {"labels": {"address_config":
@@ -381,12 +394,11 @@ items:
       "enmasseproject/artemis"}, {"description": "The default image to use as topic
       forwarder", "name": "TOPIC_FORWARDER_REPO", "value": "enmasseproject/topic-forwarder"},
       {"description": "The image to use for the router", "name": "ROUTER_REPO", "value":
-      "enmasseproject/qdrouterd"}, {"description": "The link capacity setting for
-      router", "name": "ROUTER_LINK_CAPACITY", "value": "50"}, {"description": "A
-      valid instance name for the instance", "name": "INSTANCE", "required": true},
-      {"description": "A valid name for the instance", "name": "NAME", "required":
-      true}, {"description": "The address to use for the topic", "name": "ADDRESS",
-      "required": true}]}'
+      "lulf/qdrouterd"}, {"description": "The link capacity setting for router", "name":
+      "ROUTER_LINK_CAPACITY", "value": "50"}, {"description": "A valid instance name
+      for the instance", "name": "INSTANCE", "required": true}, {"description": "A
+      valid name for the instance", "name": "NAME", "required": true}, {"description":
+      "The address to use for the topic", "name": "ADDRESS", "required": true}]}'
     tls-topic-persisted.json: '{"apiVersion": "v1", "kind": "Template", "metadata":
       {"labels": {"app": "enmasse"}, "name": "tls-topic-persisted"}, "objects": [{"apiVersion":
       "v1", "kind": "PersistentVolumeClaim", "metadata": {"labels": {"app": "enmasse",
@@ -424,12 +436,12 @@ items:
       to use for the message broker", "name": "BROKER_REPO", "value": "enmasseproject/artemis"},
       {"description": "The default image to use as topic forwarder", "name": "TOPIC_FORWARDER_REPO",
       "value": "enmasseproject/topic-forwarder"}, {"description": "The image to use
-      for the router", "name": "ROUTER_REPO", "value": "enmasseproject/qdrouterd"},
-      {"description": "The link capacity setting for router", "name": "ROUTER_LINK_CAPACITY",
-      "value": "50"}, {"description": "A valid instance name for the instance", "name":
-      "INSTANCE", "required": true}, {"description": "A valid name for the instance",
-      "name": "NAME", "required": true}, {"description": "The address to use for the
-      topic", "name": "ADDRESS", "required": true}]}'
+      for the router", "name": "ROUTER_REPO", "value": "lulf/qdrouterd"}, {"description":
+      "The link capacity setting for router", "name": "ROUTER_LINK_CAPACITY", "value":
+      "50"}, {"description": "A valid instance name for the instance", "name": "INSTANCE",
+      "required": true}, {"description": "A valid name for the instance", "name":
+      "NAME", "required": true}, {"description": "The address to use for the topic",
+      "name": "ADDRESS", "required": true}]}'
     topic-inmemory.json: '{"apiVersion": "v1", "kind": "Template", "metadata": {"labels":
       {"app": "enmasse"}, "name": "topic-inmemory"}, "objects": [{"apiVersion": "extensions/v1beta1",
       "kind": "Deployment", "metadata": {"labels": {"address_config": "address-config-${INSTANCE}-${NAME}",
@@ -460,12 +472,12 @@ items:
       to use for the message broker", "name": "BROKER_REPO", "value": "enmasseproject/artemis"},
       {"description": "The default image to use as topic forwarder", "name": "TOPIC_FORWARDER_REPO",
       "value": "enmasseproject/topic-forwarder"}, {"description": "The image to use
-      for the router", "name": "ROUTER_REPO", "value": "enmasseproject/qdrouterd"},
-      {"description": "The link capacity setting for router", "name": "ROUTER_LINK_CAPACITY",
-      "value": "50"}, {"description": "A valid instance name for the instance", "name":
-      "INSTANCE", "required": true}, {"description": "A valid name for the instance",
-      "name": "NAME", "required": true}, {"description": "The address to use for the
-      topic", "name": "ADDRESS", "required": true}]}'
+      for the router", "name": "ROUTER_REPO", "value": "lulf/qdrouterd"}, {"description":
+      "The link capacity setting for router", "name": "ROUTER_LINK_CAPACITY", "value":
+      "50"}, {"description": "A valid instance name for the instance", "name": "INSTANCE",
+      "required": true}, {"description": "A valid name for the instance", "name":
+      "NAME", "required": true}, {"description": "The address to use for the topic",
+      "name": "ADDRESS", "required": true}]}'
     topic-persisted.json: '{"apiVersion": "v1", "kind": "Template", "metadata": {"labels":
       {"app": "enmasse"}, "name": "topic-persisted"}, "objects": [{"apiVersion": "v1",
       "kind": "PersistentVolumeClaim", "metadata": {"labels": {"app": "enmasse", "group_id":
@@ -500,12 +512,12 @@ items:
       to use for the message broker", "name": "BROKER_REPO", "value": "enmasseproject/artemis"},
       {"description": "The default image to use as topic forwarder", "name": "TOPIC_FORWARDER_REPO",
       "value": "enmasseproject/topic-forwarder"}, {"description": "The image to use
-      for the router", "name": "ROUTER_REPO", "value": "enmasseproject/qdrouterd"},
-      {"description": "The link capacity setting for router", "name": "ROUTER_LINK_CAPACITY",
-      "value": "50"}, {"description": "A valid instance name for the instance", "name":
-      "INSTANCE", "required": true}, {"description": "A valid name for the instance",
-      "name": "NAME", "required": true}, {"description": "The address to use for the
-      topic", "name": "ADDRESS", "required": true}]}'
+      for the router", "name": "ROUTER_REPO", "value": "lulf/qdrouterd"}, {"description":
+      "The link capacity setting for router", "name": "ROUTER_LINK_CAPACITY", "value":
+      "50"}, {"description": "A valid instance name for the instance", "name": "INSTANCE",
+      "required": true}, {"description": "A valid name for the instance", "name":
+      "NAME", "required": true}, {"description": "The address to use for the topic",
+      "name": "ADDRESS", "required": true}]}'
   kind: ConfigMap
   metadata:
     labels:

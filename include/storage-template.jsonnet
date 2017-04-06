@@ -105,7 +105,7 @@ local forwarder = import "forwarder.jsonnet";
         {
           "name": "ROUTER_REPO",
           "description": "The image to use for the router",
-          "value": "enmasseproject/qdrouterd"
+          "value": "lulf/qdrouterd"
         },
         {
           "name": "ROUTER_LINK_CAPACITY",

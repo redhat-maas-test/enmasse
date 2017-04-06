@@ -64,6 +64,14 @@ local common = import "common.jsonnet";
       }
     },
 
+  hawkular_volume()::
+    {
+      "name": "hawkular-openshift-agent",
+      "configMap": {
+          "name": "hawkular-router-config"
+      }
+    },
+
   sasldb_volume()::
     {
       "name": "sasldb-vol",
