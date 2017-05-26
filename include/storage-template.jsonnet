@@ -1,11 +1,15 @@
 local version = std.extVar("VERSION");
 local broker = import "broker.jsonnet";
+local util = import "util.jsonnet";
 local router = import "router.jsonnet";
-local broker_repo = "${BROKER_REPO}";
 local router_repo = "${ROUTER_REPO}";
 local router_collector_repo = "${ROUTER_COLLECTOR_REPO}";
 local forwarder_repo = "${TOPIC_FORWARDER_REPO}";
 local forwarder = import "forwarder.jsonnet";
+local k = import "../ksonnet-lib/ksonnet.beta.1/k.libsonnet";
+local deployment = k.apps.v1beta1.deployment;
+local container = k.core.v1.container;
+
 {
   template(multicast, persistence)::
     local addrtype = (if multicast then "topic" else "queue");
@@ -23,7 +27,14 @@ local forwarder = import "forwarder.jsonnet";
         }
       },
 
-      local controller = {
+      local broker = container.default("broker", "${BROKER_REPO}:" + version) +
+        container.mixin.namedPort("amqp", 5673) + 
+        container.mixin.namedPort("core", 61616) + 
+        container.helpers.namedPort("jolokia", 8161) +
+        container.helpers.
+
+      local controller = deployment.default("${NAME}") +
+        deployment.mixin.metadata.labels
         "apiVersion": "extensions/v1beta1",
         "kind": "Deployment",
         "metadata": {

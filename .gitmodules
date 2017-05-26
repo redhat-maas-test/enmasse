@@ -1,3 +1,6 @@
 [submodule "jsonnet"]
 	path = jsonnet
 	url = https://github.com/google/jsonnet.git
+[submodule "ksonnet-lib"]
+	path = ksonnet-lib
+	url = git@github.com:ksonnet/ksonnet-lib.git

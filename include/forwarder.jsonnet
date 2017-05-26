@@ -1,4 +1,5 @@
 local version = std.extVar("VERSION");
+local k = import "../ksonnet-lib/ksonnet.beta.1/k.libsonnet";
 local common = import "common.jsonnet";
 {
   container(image_repo, addressEnv)::
