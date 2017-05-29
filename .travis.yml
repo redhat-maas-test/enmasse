@@ -1,6 +1,9 @@
 language: ruby
 notifications:
   email: false
+sudo: required
+services:
+- docker
 rvm:
 - 2.2
 before_script:
