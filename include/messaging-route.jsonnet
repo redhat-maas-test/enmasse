@@ -1,5 +1,5 @@
 {
-  generate(instance, hostname)::
+  route(instance, hostname)::
   {
     "kind": "Route",
     "apiVersion": "v1",
@@ -26,5 +26,30 @@
             "termination": "passthrough"
         }
     }
-  }
+  },
+
+  ingress(instance, hostname)::
+    {
+      "kind": "Ingress",
+      "apiVersion": "extensions/v1beta1",
+      "metadata": {
+          "labels": {
+            "app": "enmasse",
+          },
+          "annotations": {
+            "instance": instance
+          },
+          "name": "messaging"
+      },
+      "spec": {
+        "tls": {
+          "host": hostname,
+          "secretName": ""
+        },
+        "backend": {
+          "serviceName": "messaging",
+          "servicePort": 5671
+        }
+      }
+    }
 }

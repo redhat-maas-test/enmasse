@@ -44,12 +44,16 @@ local version = std.extVar("VERSION");
       hawkularRouterConfig
     ],
 
-    local routeConfig = [ console.route("${INSTANCE}", "${CONSOLE_HOSTNAME}"),
-      messagingRoute.generate("${INSTANCE}", "${MESSAGING_HOSTNAME}"),
-      mqttRoute.generate("${INSTANCE}", "${MQTT_GATEWAY_HOSTNAME}") ],
+    local routeConfig = [
+      console.route("${INSTANCE}", "${CONSOLE_HOSTNAME}"),
+      messagingRoute.route("${INSTANCE}", "${MESSAGING_HOSTNAME}"),
+      mqttRoute.route("${INSTANCE}", "${MQTT_GATEWAY_HOSTNAME}")
+    ],
 
     local ingressConfig = [
-      console.ingress("${INSTANCE}", "${CONSOLE_HOSTNAME}")
+      console.ingress("${INSTANCE}", "${CONSOLE_HOSTNAME}"),
+      messagingRoute.ingress("${INSTANCE}", "${MESSAGING_HOSTNAME}"),
+      mqttRoute.ingress("${INSTANCE}", "${MQTT_GATEWAY_HOSTNAME}")
     ],
 
     local adminObj = [
